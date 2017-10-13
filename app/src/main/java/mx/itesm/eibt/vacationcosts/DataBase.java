@@ -48,6 +48,21 @@ public class DataBase extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    public boolean deleteAllFromVacacion()
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        try{
+            db.delete(TABLE_VACATION,
+                    null,
+                    null);
+            db.close();
+            return true;
+
+        }catch (Exception e){
+            return false;
+        }
+    }
+
     public boolean deleteFromVacacion(int id)
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -144,8 +159,6 @@ public class DataBase extends SQLiteOpenHelper {
                 null,
                 null,
                 null);
-        if(cursor != null)
-            cursor.moveToFirst();
         db.close();
         return cursor;
     }
