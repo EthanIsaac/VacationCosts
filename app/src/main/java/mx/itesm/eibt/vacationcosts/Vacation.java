@@ -2,7 +2,6 @@ package mx.itesm.eibt.vacationcosts;
 
 import android.content.Context;
 import android.view.Gravity;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -14,26 +13,26 @@ import android.widget.TextView;
 public class Vacation extends LinearLayout {
     private String name;
     private String date;
+    private TextView eName;
+    private TextView eDate;
     public Vacation(Context context, String name, String date) {
         super(context);
-        this.name = name;
-        this.date = date;
         setStyle();
-        loadInfo(name, date);
+        createObjects(name, date);
     }
 
-    private void loadInfo(String name, String date) {
+    private void createObjects(String name, String date) {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(900,100);
 
-        TextView eName = new TextView(getContext());
-        eName.setText("Lugar: " + name);
+        eName = new TextView(getContext());
+        setName(name);
         eName.setTextSize(20);
         eName.setTextAlignment(TEXT_ALIGNMENT_CENTER);
         eName.setLayoutParams(params);
         addView(eName);
 
-        TextView eDate = new TextView(getContext());
-        eDate.setText("Fecha: " + date);
+        eDate = new TextView(getContext());
+        setDate(date);
         eDate.setTextSize(20);
         eDate.setTextAlignment(TEXT_ALIGNMENT_CENTER);
         eDate.setLayoutParams(params);
@@ -54,5 +53,13 @@ public class Vacation extends LinearLayout {
     }
     public String getDate(){
         return this.date;
+    }
+    public void setName(String name){
+        this.name = name;
+        eName.setText("Lugar: " + name);
+    }
+    public void setDate(String date){
+        this.name = date;
+        eDate.setText("Fecha: " + date);
     }
 }
