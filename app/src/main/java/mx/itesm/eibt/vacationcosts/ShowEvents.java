@@ -2,6 +2,8 @@ package mx.itesm.eibt.vacationcosts;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -19,6 +21,8 @@ import android.widget.TextView;
 public class ShowEvents extends AppCompatActivity {
     DataBase db;
     int costoTotal;
+    private ClipboardManager myClipboard;
+    private ClipData myClip;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +59,13 @@ public class ShowEvents extends AppCompatActivity {
                 e.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        openLink(e.getLink());
+                        String text;
+                        text = e.getLink();
+                        openLink(text);
+                        myClipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+
+                        myClip = ClipData.newPlainText("text", text);
+                        myClipboard.setPrimaryClip(myClip);
                     }
                 });
                 c.addView(e);
