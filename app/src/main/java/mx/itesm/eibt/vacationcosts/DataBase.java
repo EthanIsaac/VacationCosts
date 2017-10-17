@@ -55,7 +55,6 @@ public class DataBase extends SQLiteOpenHelper {
             db.delete(TABLE_VACATION,
                     null,
                     null);
-            db.close();
             return true;
 
         }catch (Exception e){
@@ -70,7 +69,6 @@ public class DataBase extends SQLiteOpenHelper {
             db.delete(TABLE_VACATION,
                     " id = ?",
                     new String[] {String.valueOf(id)});
-            db.close();
             return true;
 
         }catch (Exception e){
@@ -85,7 +83,6 @@ public class DataBase extends SQLiteOpenHelper {
             db.delete(TABLE_EVENT,
                     " id = ?",
                     new String[] {String.valueOf(id)});
-            db.close();
             return true;
 
         }catch (Exception e){
@@ -104,7 +101,6 @@ public class DataBase extends SQLiteOpenHelper {
                 values,
                 " id = ?",
                 new String[] {String.valueOf(id)});
-        db.close();
     }
 
     public void updateEvent(int id, String name, int cost, String description, String link)
@@ -120,7 +116,6 @@ public class DataBase extends SQLiteOpenHelper {
                 values,
                 " id = ?",
                 new String[] {String.valueOf(id)});
-        db.close();
     }
 
     public void insertIntoVacation(String place, String date)
@@ -130,7 +125,6 @@ public class DataBase extends SQLiteOpenHelper {
         values.put(COLUMN_VACATION_PLACE, place);
         values.put(COLUMN_VACATION_DATE, date);
         db.insert(TABLE_VACATION, null, values);
-        db.close();
     }
 
     public void insertIntoEvent(int id_vacation, String name, int cost, String description, String link)
@@ -143,7 +137,6 @@ public class DataBase extends SQLiteOpenHelper {
         values.put(COLUMN_EVENT_DESCRIPTION, description);
         values.put(COLUMN_EVENT_LINK, link);
         db.insert(TABLE_EVENT, null, values);
-        db.close();
     }
 
     public Cursor selectAllFromVacation()
@@ -159,7 +152,6 @@ public class DataBase extends SQLiteOpenHelper {
                 null,
                 null,
                 null);
-        db.close();
         return cursor;
     }
 
@@ -170,7 +162,7 @@ public class DataBase extends SQLiteOpenHelper {
 
         Cursor cursor = db.query(TABLE_EVENT,
                 projection,
-                " id = ?",
+                " id_vacation = ?",
                 new String[]{String.valueOf(id_vacation)},
                 null,
                 null,
@@ -178,7 +170,6 @@ public class DataBase extends SQLiteOpenHelper {
                 null);
         if(cursor != null)
             cursor.moveToFirst();
-        db.close();
         return cursor;
     }
 
