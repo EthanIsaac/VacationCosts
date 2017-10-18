@@ -26,19 +26,25 @@ public class Event extends LinearLayout {
     private int cost;
     private String description;
     private String link;
+    private boolean paid;
     private TextView eName;
     private TextView eCost;
     private TextView eDescription;
     private TextView eLink;
-    public Event(Context context, int id, String name, int cost, String description, String link) {
+    public Event(Context context, int id, String name, int cost, String description, String link, int paid) {
         super(context);
         this.id = id;
         this.name = name;
         this.cost = cost;
         this.description = description;
         this.link = link;
+        this.paid = (paid==1);
         setStyle();
         createObjects(name, cost, description, link);
+        if(isPaid())
+        {
+            setBackgroundColor(ContextCompat.getColor(getContext(),R.color.colorLight));
+        }
     }
 
     private void createObjects(String name, int cost, String description, final String link) {
@@ -123,5 +129,13 @@ public class Event extends LinearLayout {
 
     public String getLink() {
         return link;
+    }
+
+    public boolean isPaid() {
+        return paid;
+    }
+
+    public void setPaid(boolean paid) {
+        this.paid = paid;
     }
 }

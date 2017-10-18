@@ -27,6 +27,7 @@ public class DataBase extends SQLiteOpenHelper {
     public static final String COLUMN_EVENT_COST = "cost";
     public static final String COLUMN_EVENT_DESCRIPTION = "description";
     public static final String COLUMN_EVENT_LINK = "link";
+    public static final String COLUMN_EVENT_PAID = "paid";
 
     private static final String SQL_CREATE_TABLE_VACATION = "CREATE TABLE "
             + TABLE_VACATION + "(" + COLUMN_VACATION_ID
@@ -41,7 +42,8 @@ public class DataBase extends SQLiteOpenHelper {
             + " text NOT NULL, " + COLUMN_EVENT_COST
             + " integer, " + COLUMN_EVENT_DESCRIPTION
             + " text, " + COLUMN_EVENT_LINK
-            + " text, FOREIGN KEY (" + COLUMN_EVENT_ID_VACATION + ") REFERENCES " + TABLE_VACATION + "("
+            + " text, " + COLUMN_EVENT_PAID
+            + " integer DEFAULT 0, FOREIGN KEY (" + COLUMN_EVENT_ID_VACATION + ") REFERENCES " + TABLE_VACATION + "("
             + COLUMN_VACATION_ID + ") ON DELETE CASCADE ON UPDATE CASCADE);";
 
     public DataBase(Context context) {
@@ -103,6 +105,28 @@ public class DataBase extends SQLiteOpenHelper {
                 new String[] {String.valueOf(id)});
     }
 
+    public void payEvent(int id)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_EVENT_PAID, 1);
+
+        int i = db.update(TABLE_EVENT,
+                values,
+                " id = ?",
+                new String[] {String.valueOf(id)});
+    }
+    public void unpayEvent(int id)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_EVENT_PAID, 0);
+
+        int i = db.update(TABLE_EVENT,
+                values,
+                " id = ?",
+                new String[] {String.valueOf(id)});
+    }
     public void updateEvent(int id, String name, int cost, String description, String link)
     {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -158,7 +182,7 @@ public class DataBase extends SQLiteOpenHelper {
     public Cursor selectFromEvent(int id_vacation)
     {
         SQLiteDatabase db = this.getReadableDatabase();
-        String[] projection = {COLUMN_EVENT_ID, COLUMN_EVENT_ID_VACATION, COLUMN_EVENT_NAME, COLUMN_EVENT_COST, COLUMN_EVENT_DESCRIPTION, COLUMN_EVENT_LINK};
+        String[] projection = {COLUMN_EVENT_ID, COLUMN_EVENT_ID_VACATION, COLUMN_EVENT_NAME, COLUMN_EVENT_COST, COLUMN_EVENT_DESCRIPTION, COLUMN_EVENT_LINK, COLUMN_EVENT_PAID};
 
         Cursor cursor = db.query(TABLE_EVENT,
                 projection,

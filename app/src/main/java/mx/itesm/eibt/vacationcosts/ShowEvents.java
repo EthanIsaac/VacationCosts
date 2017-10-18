@@ -7,7 +7,9 @@ import android.content.ClipboardManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,9 +20,12 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 public class ShowEvents extends AppCompatActivity {
     DataBase db;
     int costoTotal;
+    int costoRestante;
     private ClipboardManager myClipboard;
     private ClipData myClip;
     @Override
@@ -44,10 +49,30 @@ public class ShowEvents extends AppCompatActivity {
         c.removeAllViews();
         final Cursor events = db.selectFromEvent(getIntent().getIntExtra("id",0));
         costoTotal = 0;
+        costoRestante = 0;
         if(events.moveToFirst())
         {
             do {
-                final Event e = new Event(this, events.getInt(0), events.getString(2), events.getInt(3), events.getString(4), events.getString(5));
+                final Event e = new Event(this, events.getInt(0), events.getString(2), events.getInt(3), events.getString(4), events.getString(5), events.getInt(6));
+                e.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if(e.isPaid())
+                        {
+                            e.setBackgroundColor(Color.WHITE);
+                            e.setPaid(false);
+                            db.unpayEvent(e.getEventId());
+                            loadEvents();
+                        }
+                        else
+                        {
+                            e.setBackgroundColor(ContextCompat.getColor(e.getContext(),R.color.colorLight));
+                            e.setPaid(true);
+                            db.payEvent(e.getEventId());
+                            loadEvents();
+                        }
+                    }
+                });
                 Button delete = (Button)e.getChildAt(e.getChildCount()-1);
                 delete.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -56,24 +81,30 @@ public class ShowEvents extends AppCompatActivity {
                         loadEvents();
                     }
                 });
-                e.setOnClickListener(new View.OnClickListener() {
+                TextView linkTV = (TextView)e.getChildAt(e.getChildCount()-2);
+                linkTV.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         String text;
                         text = e.getLink();
                         openLink(text);
                         myClipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-
                         myClip = ClipData.newPlainText("text", text);
                         myClipboard.setPrimaryClip(myClip);
                     }
                 });
                 c.addView(e);
                 costoTotal+=events.getInt(3);
+                if(!e.isPaid())
+                {
+                    costoRestante+=events.getInt(3);
+                }
             }while(events.moveToNext());
         }
         TextView costo = (TextView)findViewById(R.id.costoTotal);
         costo.setText("$"+costoTotal);
+        TextView restante = (TextView)findViewById(R.id.costoRestante);
+        restante.setText("$"+costoRestante);
     }
     public Dialog onCreateDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
